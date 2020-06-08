@@ -17,4 +17,6 @@ matrix.draw_text(3, 3, "Hello", 0xFFFFFF)
 
 matrix.draw_circle(16, 8, 4, 0x0000FF)
 
+matrix.update()
+
 time.sleep(10)
