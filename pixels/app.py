@@ -22,6 +22,9 @@ except:
         def set_pixel(self, *args, **kwargs):
             pass
 
+        def update(self):
+            pass
+
 
 config = Config(".env")
 MATRIX_COLS = config("MATRIX_COLS", default=32, cast=int)
@@ -66,3 +69,4 @@ class ControlWebsocketEndpoint(WebSocketEndpoint):
         elif action == "reset_color":
             matrix.set_pixel(row, col, 0x000000)
             logger.info(f"Reset color on {col},{row}")
+        matrix.update()
