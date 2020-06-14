@@ -8,6 +8,8 @@ from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
+from pixels.utils import hex2rgb
+
 logger = logging.getLogger(__file__)
 
 try:
@@ -17,12 +19,6 @@ except:
 
     class Screen:
         def __init__(*args, **kwargs):
-            pass
-
-        def set_pixel(self, *args, **kwargs):
-            pass
-
-        def update(self):
             pass
 
 
@@ -64,9 +60,8 @@ class ControlWebsocketEndpoint(WebSocketEndpoint):
         col = int(data["col"])
         if action == "set_color":
             color = f"0x{data['color'][1:]}"
-            matrix.set_pixel(col, row, int(color, 16))
+            matrix.matrix.SetPixel(col, row, *hex2rgb(int(color, 16)))
             logger.info(f"Set color to #{color} on {col},{row}")
         elif action == "reset_color":
-            matrix.set_pixel(col, row, 0x000000)
+            matrix.matrix.SetPixel(col, row, 0x000000)
             logger.info(f"Reset color on {col},{row}")
-        matrix.update()
