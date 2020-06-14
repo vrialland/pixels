@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>Matrix</title>
+    <script src="/static/matrix.js"></script>
+  </head>
+  <body>
+    <table>
+      {% for col in range(cols) %}
+        <tr>
+          {% for row in range(rows) %}
+            <td></td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
