@@ -64,9 +64,9 @@ class ControlWebsocketEndpoint(WebSocketEndpoint):
         col = int(data["col"])
         if action == "set_color":
             color = f"0x{data['color'][1:]}"
-            matrix.set_pixel(row, col, int(color, 16))
+            matrix.set_pixel(col, row, int(color, 16))
             logger.info(f"Set color to #{color} on {col},{row}")
         elif action == "reset_color":
-            matrix.set_pixel(row, col, 0x000000)
+            matrix.set_pixel(col, row, 0x000000)
             logger.info(f"Reset color on {col},{row}")
         matrix.update()
