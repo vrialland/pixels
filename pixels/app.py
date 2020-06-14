@@ -1,20 +1,34 @@
+import json
 import logging
 
 from starlette.applications import Starlette
 from starlette.config import Config
 from starlette.endpoints import WebSocketEndpoint
+from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 
-from pixels.screen import Screen
+logger = logging.getLogger(__file__)
+
+try:
+    from pixels.screen import Screen
+except:
+    logger.error("Cannot load Screen, is `rgbmatrix` lib available?")
+
+    class Screen:
+        def __init__(*args, **kwargs):
+            pass
+
+        def set_pixel(self, *args, **kwargs):
+            pass
+
 
 config = Config(".env")
 MATRIX_COLS = config("MATRIX_COLS", default=32, cast=int)
 MATRIX_ROWS = config("MATRIX_ROWS", default=16, cast=int)
 
-logger = logging.getLogger(__file__)
 
-screen = Screen(MATRIX_COLS, MATRIX_ROWS)
+matrix = Screen(MATRIX_COLS, MATRIX_ROWS)
 
 
 routes = (Mount("/static", StaticFiles(directory="static")),)
@@ -38,4 +52,17 @@ class ControlWebsocketEndpoint(WebSocketEndpoint):
         logger.info("Connection lost")
 
     async def on_receive(self, websocket, data):
-        logger.info('Received "%s"', data)
+        data = json.loads(data)
+        action = data.get("action")
+        if action is None:
+            return
+        logger.info('Received "%s"', action)
+        row = int(data["row"])
+        col = int(data["col"])
+        if action == "set_color":
+            color = f"0x{data['color'][1:]}"
+            matrix.set_pixel(row, col, int(color, 16))
+            logger.info(f"Set color to #{color} on {col},{row}")
+        elif action == "reset_color":
+            matrix.set_pixel(row, col, 0x000000)
+            logger.info(f"Reset color on {col},{row}")

@@ -4,13 +4,18 @@
     <meta charset="utf-8">
     <title>Matrix</title>
     <script src="/static/matrix.js"></script>
+    <link rel="stylesheet" href="/static/matrix.css" />
   </head>
   <body>
+    <div>
+      <label for="color">Color: </label>
+      <input type="color" id="color" />
+    </div>
     <table>
-      {% for col in range(cols) %}
+      {% for row in range(rows) %}
         <tr>
-          {% for row in range(rows) %}
-            <td></td>
+          {% for col in range(cols) %}
+            <td data-row="{{row}}" data-col="{{col}}" style="background-color: black;"></td>
           {% endfor %}
         </tr>
       {% endfor %}
